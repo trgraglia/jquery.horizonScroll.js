@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Jquery.horizonscroll.js : This is a jQuery plugin which allows for websites to scroll left and right." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Jquery.horizonscroll.js</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/trgraglia/jquery.horizonScroll.js">View on GitHub</a>
+
+          <h1 id="project_title">Jquery.horizonscroll.js</h1>
+          <h2 id="project_tagline">This is a jQuery plugin which allows for websites to scroll left and right.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/trgraglia/jquery.horizonScroll.js/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/trgraglia/jquery.horizonScroll.js/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="jqueryhorizonscrolljs" class="anchor" href="#jqueryhorizonscrolljs"><span class="octicon octicon-link"></span></a>jquery.horizonScroll.js</h1>
+
+<p>This is a jQuery plugin which allows for websites to page(scroll by set width) left and right.</p>
+
+<h1>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<p>Initial usage. All elements specified by the selector become a page.</p>
+
+<div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">'selector'</span><span class="p">).</span><span class="nx">horizon</span><span class="p">();</span>
+</pre></div>
+
+<p>If you do not want to use jquery.swipeTouch.js for swipe left and right:</p>
+
+<div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="s1">'selector'</span><span class="p">).</span><span class="nx">horizon</span><span class="p">({</span><span class="nx">swipe</span><span class="o">:</span> <span class="kc">false</span><span class="p">});</span>
+</pre></div>
+
+<p>You can invoke a left page scroll or right page scroll. This helps if you would like to bind to additional elements on the page.
+The selector here is ignored.</p>
+
+<div class="highlight"><pre><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">horizon</span><span class="p">(</span><span class="s1">'scrollRight'</span><span class="p">);</span>
+<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">horizon</span><span class="p">(</span><span class="s1">'scrollLeft'</span><span class="p">);</span>
+</pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Jquery.horizonscroll.js maintained by <a href="https://github.com/trgraglia">trgraglia</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
