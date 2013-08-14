@@ -61,9 +61,14 @@
 							default: return; // Exit handler for other keys
 						}
 					},
-					click:function (event, target) {
+					// May be needed for other click events but curently not.
+					/*click:function (event, target) {
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						
 						$(target).click();
-					},
+					},*/
 					// Default is 75px, set to 0 for demo so any distance triggers swipe
 					threshold:75
 				});
