@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="jquery-1.10.2.js"></script>
+<script type="text/javascript" src="jquery.touchSwipe.js"></script>
+<script type="text/javascript" src="jquery.horizonScroll.js"></script>
+
+</head>
+<body>
+
+<header data-role="header" id="header"></header>
+
+<div class="horizon-prev"><img src="images/l-arrow.png"></div>
+<div class="horizon-next"><img src="images/r-arrow.png"></div>
+	
+<section data-role="section" id="section-section1"></section>
+<section data-role="section" id="section-section2"></section>
+<section data-role="section" id="section-section3"></section>
+<section data-role="section" id="section-section4"></section>
+
+<footer data-role="footer" id="footer"></footer>
+
+<script type="text/javascript">
+	// By default, swipe is enabled.
+	$('section').horizon();
+	
+	// If you do not want to include another plugin, TouchSwipe, you can set it to false in the default options by passing in the option as false.
+	//$('section').horizon({swipe: false});
+</script>
+
+</body>
+</html>
