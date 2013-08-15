@@ -2,6 +2,10 @@ jquery.horizonScroll.js
 =======================
 This is a jQuery plugin which allows for websites to page(scroll by set width) left and right.
 
+Demo
+=======================
+Click here for the [demo](http://trgraglia.github.io/jquery.horizonScroll.js/demo/index.html)
+
 Usage
 =======================
 Initial usage. All elements specified by the selector become a page.
