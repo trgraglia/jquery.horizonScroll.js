@@ -1,0 +1,41 @@
+html, body {
+	width:100%;
+	height:100%;
+	padding:0;
+	margin:0;
+	overflow:hidden;
+}
+
+section {
+	float:left;
+	display:block;
+	height:100%;
+	padding:0;
+	margin:0;
+}
+
+#section-section1 {
+	background:#2c3e50;
+}
+#section-section2 {
+	background:#16a085;
+}
+#section-section3 {
+	background:#27ae60;
+}
+#section-section4 {
+	background:#c0392b;
+}
+
+.horizon-prev, .horizon-next {
+position: fixed;
+top: 50%;
+margin-top: -24px;
+z-index: 9999;
+}
+.horizon-prev {
+left: 20px;
+}
+.horizon-next {
+right: 20px;
+}
