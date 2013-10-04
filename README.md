@@ -1,6 +1,6 @@
-jquery.horizonScroll.js
+jquery.horizonScroll.js - Horizontal Scrolling (Paging) Websites
 =======================
-This is a jQuery plugin which allows for websites to page(scroll by set width) left and right.
+This is a jQuery plugin which allows for websites to page(scroll by set width) left and right horizontally. Horizontal scroll sites offer a new and unique way to develope sites! Check it out and give feedback! THX
 
 Demo
 =======================
