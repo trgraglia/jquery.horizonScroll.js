@@ -11,116 +11,120 @@
  */
 
 // Semicolon to prevent breakage with concatenation.
-;(function( $ ) {
-	'use strict';
+;
+(function ($) {
+    'use strict';
 
-	$.fn.horizon = function(options, i) {
-		if (options === 'scrollLeft') {
-			scrollLeft();
-		} else if (options === 'scrollRight') {
-			scrollRight();
-		} else if (options === 'scrollTo') { // TODO: Should verify i here
+    $.fn.horizon = function (options, i) {
+        if (options === 'scrollLeft') {
+            scrollLeft();
+        } else if (options === 'scrollRight') {
+            scrollRight();
+        } else if (options === 'scrollTo') { // TODO: Should verify i here
             scrollTo(i, $.fn.horizon.defaults.scrollDuration);
-		} else {			
-			$.extend($.fn.horizon.defaults, options);
-		
-			$.fn.horizon.defaults.sections = this;
-			$.fn.horizon.defaults.limit = this.length;
-			$.fn.horizon.defaults.i = 0;
-					
-			sizeSections();
-			
-			$(document).on('mousewheel DOMMouseScroll', function(e) {
-				// Equalize event object.
-				var evt = window.event || e;
-				// Convert to originalEvent if possible.
-				evt = evt.originalEvent ? evt.originalEvent : evt;
-				// Check for detail first, because it is used by Opera and FF.
-				var delta = evt.detail ? evt.detail*(-40) : evt.wheelDelta;
+        } else {
+            $.extend($.fn.horizon.defaults, options);
 
-				scrollAction(delta);
-			}).on('click', '.horizon-next', function(){
-				scrollRight();
-			}).on('click', '.horizon-prev', function(){
-				scrollLeft();
-			});
-			
-			if($.fn.horizon.defaults.swipe) {
-				$(document).swipe({
-					// Generic swipe handler for all directions.
-					swipe:function(event, direction, distance, duration, fingerCount) {
-						if (scrolls[direction]) {
+            $.fn.horizon.defaults.sections = this;
+            $.fn.horizon.defaults.limit = this.length;
+            $.fn.horizon.defaults.i = 0;
+
+            sizeSections();
+
+            $(document).on('mousewheel DOMMouseScroll', function (e) {
+                // Equalize event object.
+                var evt = window.event || e;
+                // Convert to originalEvent if possible.
+                evt = evt.originalEvent ? evt.originalEvent : evt;
+                // Check for detail first, because it is used by Opera and FF.
+                var delta = evt.detail ? evt.detail * (-40) : evt.wheelDelta;
+
+                scrollAction(delta);
+            }).on('click', '.horizon-next', function () {
+                scrollRight();
+            }).on('click', '.horizon-prev', function () {
+                scrollLeft();
+            });
+
+            if ($.fn.horizon.defaults.swipe) {
+                $(document).swipe({
+                    // Generic swipe handler for all directions.
+                    swipe: function (event, direction, distance, duration, fingerCount) {
+                        if (scrolls[direction]) {
                             scrolls[direction]();
                         }
-					},
-					// May be needed for other click events but currently not.
-					/*click:function (event, target) {
-						event.preventDefault();
-						event.stopPropagation();
-						event.stopImmediatePropagation();
-						
-						$(target).click();
-					},*/
-					tap: function (event, target) {
-                        target.click();
                     },
-					// Default is 75px, set to 0 for demo so any distance triggers swipe
-					threshold:75
-				});
-			}
+                    /*click: function (event, target) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        event.stopImmediatePropagation();
 
-			$(window).on('resize', function() {
-				sizeSections();	
-			}).on('keydown', function(e) {
-				if (scrolls[e.which]) {
+                        //$(target).click();
+                    },
+                    tap: function (event, target) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        event.stopImmediatePropagation();
+
+                        $(target).click();
+                    },*/
+                    // Default is 75px, set to 0 for demo so any distance triggers swipe
+                    threshold: 75
+                });
+            }
+
+            $(window).on('resize', function () {
+                sizeSections();
+            }).on('keydown', function (e) {
+                if (scrolls[e.which]) {
                     scrolls[e.which]();
                     e.preventDefault();
                 }
-			});
-			
-			return this;
-		} 
+            });
+
+            return this;
+        }
     };
-	
-	$.fn.horizon.defaults = {
-		scrollTimeout: null,
+
+    $.fn.horizon.defaults = {
+        scrollTimeout: null,
         scrollEndDelay: 250,
-		scrollDuration: 400,
-		i: 0,
-		limit: 0,
-		docWidth: 0,
-		sections: null,
-		swipe: true,
+        scrollDuration: 400,
+        i: 0,
+        limit: 0,
+        docWidth: 0,
+        sections: null,
+        swipe: true,
         fnCallback: function (i) {
         }
     };
-	
-	// HTML animate does not work in webkit. BODY does not work in opera.
-	// For animate, we must do both.
-	// http://stackoverflow.com/questions/8790752/callback-of-animate-gets-called-twice-jquery
-	var scrollTo = function(index, speed) {
-		console.log('Scroll to: ' + index);
-		
-		if(index > ($.fn.horizon.defaults.limit - 1) || index < 0) {
-			return;
-		}
-			
-		var $section = $($.fn.horizon.defaults.sections[index]);
-		$('html,body').animate({scrollLeft: $section.offset().left}, speed, 'swing', $.fn.horizon.defaults.fnCallback(index));
-		
-		if (index === 0) {
-			$('.horizon-prev').hide();
-            $('.horizon-next').show();
-		} else if(index === $.fn.horizon.defaults.limit - 1) {
-			$('.horizon-prev').show();
-            $('.horizon-next').hide();
-		} else {
-			$('.horizon-next').show();
-			$('.horizon-prev').show();
-		}
-	};
 
-	 var scrollLeft = function () {
+// HTML animate does not work in webkit. BODY does not work in opera.
+// For animate, we must do both.
+// http://stackoverflow.com/questions/8790752/callback-of-animate-gets-called-twice-jquery
+    var scrollTo = function (index, speed) {
+        console.log('Scroll to: ' + index);
+
+        if (index > ($.fn.horizon.defaults.limit - 1) || index < 0) {
+            return;
+        }
+
+        var $section = $($.fn.horizon.defaults.sections[index]);
+        $('html,body').animate({scrollLeft: $section.offset().left}, speed, 'swing', $.fn.horizon.defaults.fnCallback(index));
+
+        if (index === 0) {
+            $('.horizon-prev').hide();
+            $('.horizon-next').show();
+        } else if (index === $.fn.horizon.defaults.limit - 1) {
+            $('.horizon-prev').show();
+            $('.horizon-next').hide();
+        } else {
+            $('.horizon-next').show();
+            $('.horizon-prev').show();
+        }
+    };
+
+    var scrollLeft = function () {
         console.log('Scroll left');
 
         if ($.fn.horizon.defaults.i > 0) {
@@ -136,7 +140,7 @@
         }
     };
 
-    // Executes on 'scrollbegin'.
+// Executes on 'scrollbegin'.
     var scrollBeginHandler = function (delta) {
         // Scroll up, Scroll down.
         if (delta > 1) {
@@ -146,12 +150,12 @@
         }
     };
 
-    // Executes on 'scrollend'.
+// Executes on 'scrollend'.
     var scrollEndHandler = function () {
         $.fn.horizon.defaults.scrollTimeout = null;
     };
 
-	var scrollAction = function (delta) {
+    var scrollAction = function (delta) {
         if ($.fn.horizon.defaults.scrollTimeout === null) {
             scrollBeginHandler(delta);
         } else {
@@ -184,8 +188,9 @@
         39: scrollRight,
         40: scrollRight
     };
- 
-})(jQuery);
+
+})
+(jQuery);
 
 // SCROLLING NOTES
 // http://stackoverflow.com/questions/4989632/differentiate-between-scroll-up-down-in-jquery
