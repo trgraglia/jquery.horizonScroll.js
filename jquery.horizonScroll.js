@@ -1,24 +1,28 @@
 /**
  * HorizonScroll
- * Version: 1.0.0.0
+ * Version: 1.0.2
  * URL: https://github.com/trgraglia/jquery.horizonScroll.js/
  * Description: This is a jQuery plugin which allows for websites to scroll left and right.
- * Requires: jQuery 1.10.2, jQuery TouchSwipe (http://labs.rampinteractive.co.uk/touchSwipe/)
+ * Requires: jQuery 1.10.2
+ * Optional: jQuery TouchSwipe (http://labs.rampinteractive.co.uk/touchSwipe/)
  * Author: Anthony Graglia
  * Copyright: Copyright 2013 Anthony Graglia
  * License: MIT License
  */
 
-// Semicolon to prevent breakage with concatenation
+// Semicolon to prevent breakage with concatenation.
 ;(function( $ ) {
+	'use strict';
 
-	$.fn.horizon = function(options) {
-		if(options=='scrollLeft') {
+	$.fn.horizon = function(options, i) {
+		if (options === 'scrollLeft') {
 			scrollLeft();
-		} else if(options=='scrollRight') {
+		} else if (options === 'scrollRight') {
 			scrollRight();
+		} else if (options === 'scrollTo') { // TODO: Should verify i here
+            scrollTo(i, $.fn.horizon.defaults.scrollDuration);
 		} else {			
-			$.extend( $.fn.horizon.defaults, options );
+			$.extend($.fn.horizon.defaults, options);
 		
 			$.fn.horizon.defaults.sections = this;
 			$.fn.horizon.defaults.limit = this.length;
@@ -26,18 +30,18 @@
 					
 			sizeSections();
 			
-			$(document).on("mousewheel DOMMouseScroll", function(e){
-				// equalize event object.
+			$(document).on('mousewheel DOMMouseScroll', function(e) {
+				// Equalize event object.
 				var evt = window.event || e;
-				// convert to originalEvent if possible.
+				// Convert to originalEvent if possible.
 				evt = evt.originalEvent ? evt.originalEvent : evt;
-				// check for detail first, because it is used by Opera and FF.
+				// Check for detail first, because it is used by Opera and FF.
 				var delta = evt.detail ? evt.detail*(-40) : evt.wheelDelta;
 
 				scrollAction(delta);
-			}).on('click','.horizon-next',function(){
+			}).on('click', '.horizon-next', function(){
 				scrollRight();
-			}).on('click','.horizon-prev',function(){
+			}).on('click', '.horizon-prev', function(){
 				scrollLeft();
 			});
 			
@@ -45,21 +49,9 @@
 				$(document).swipe({
 					// Generic swipe handler for all directions.
 					swipe:function(event, direction, distance, duration, fingerCount) {
-						switch(direction) {
-							case 'right':
-								scrollLeft();
-							break;
-							case 'down':
-								scrollLeft();
-							break;
-							case 'left':
-								scrollRight();
-							break;
-							case 'up':
-								scrollRight();
-							break;
-							default: return; // Exit handler for other keys
-						}
+						if (scrolls[direction]) {
+                            scrolls[direction]();
+                        }
 					},
 					// May be needed for other click events but curently not.
 					/*click:function (event, target) {
@@ -69,6 +61,9 @@
 						
 						$(target).click();
 					},*/
+					tap: function (event, target) {
+                        target.click();
+                    },
 					// Default is 75px, set to 0 for demo so any distance triggers swipe
 					threshold:75
 				});
@@ -77,24 +72,10 @@
 			$(window).on('resize', function() {
 				sizeSections();	
 			}).on('keydown', function(e) {
-				switch(e.which) {
-					// Left, Up, Right, Down
-					case 37:
-						scrollLeft();
-						break;
-					case 38:
-						scrollLeft();
-						break;
-					case 39:
-						scrollRight();
-						break;
-					case 40:
-						scrollRight();
-						break;
-					default:
-						return;
-				}
-				e.preventDefault();
+				if (scrolls[e.which]) {
+                    scrolls[e.which]();
+                    e.preventDefault();
+                }
 			});
 			
 			return this;
@@ -109,72 +90,100 @@
 		limit: 0,
 		docWidth: 0,
 		sections: null,
-		swipe: true
+		swipe: true,
+        fnCallback: function (i) {
+        }
     };
 	
 	// HTML animate does not work in webkit. BODY does not work in opera.
 	// For animate, we must do both.
 	// http://stackoverflow.com/questions/8790752/callback-of-animate-gets-called-twice-jquery
-	var scrollTo = function(index, speed){
-		if(index > ($.fn.horizon.defaults.limit - 1) || index < 0)
+	var scrollTo = function(index, speed) {
+		console.log('Scroll to: ' + index);
+		
+		if(index > ($.fn.horizon.defaults.limit - 1) || index < 0) {
 			return;
+		}
 			
 		var $section = $($.fn.horizon.defaults.sections[index]);
-		$('html,body').animate({scrollLeft:$section.offset().left}, speed, 'swing');
+		$('html,body').animate({scrollLeft: $section.offset().left}, speed, 'swing', $.fn.horizon.defaults.fnCallback(index));
 		
-		if (index == 0) {
+		if (index === 0) {
 			$('.horizon-prev').hide();
-		} else if(index == $.fn.horizon.defaults.limit - 1) {
-			$('.horizon-next').hide();
+            $('.horizon-next').show();
+		} else if(index === $.fn.horizon.defaults.limit - 1) {
+			$('.horizon-prev').show();
+            $('.horizon-next').hide();
 		} else {
 			$('.horizon-next').show();
 			$('.horizon-prev').show();
 		}
 	};
 
-	var scrollLeft = function(){
-		if($.fn.horizon.defaults.i > 0)
-			scrollTo(--$.fn.horizon.defaults.i, $.fn.horizon.defaults.scrollDuration);
-	};
+	 var scrollLeft = function () {
+        console.log('Scroll left');
 
-	var scrollRight = function(){
-		if($.fn.horizon.defaults.i < $.fn.horizon.defaults.limit - 1)
-			scrollTo(++$.fn.horizon.defaults.i, $.fn.horizon.defaults.scrollDuration);
-	};
-	
-	// Executes on "scrollbegin".
-	var scrollBeginHandler = function(delta) {
-		// Scroll up, Scroll down.
-		if (delta > 1) 
-			scrollLeft();
-		else if (delta < -1)
-			scrollRight();
-	};
+        if ($.fn.horizon.defaults.i > 0) {
+            scrollTo(--$.fn.horizon.defaults.i, $.fn.horizon.defaults.scrollDuration);
+        }
+    };
 
-	// Executes on "scrollend".
-	var scrollEndHandler = function() {
-		$.fn.horizon.defaults.scrollTimeout = null;
-	};
+    var scrollRight = function () {
+        console.log('Scroll right');
 
-	var scrollAction = function(delta) {
-		if ( $.fn.horizon.defaults.scrollTimeout === null )
-			scrollBeginHandler(delta);
-		else
-			clearTimeout($.fn.horizon.defaults.scrollTimeout);
-				
-		$.fn.horizon.defaults.scrollTimeout = setTimeout(scrollEndHandler, $.fn.horizon.defaults.scrollEndDelay);
-	};
+        if ($.fn.horizon.defaults.i < $.fn.horizon.defaults.limit - 1) {
+            scrollTo(++$.fn.horizon.defaults.i, $.fn.horizon.defaults.scrollDuration);
+        }
+    };
 
-	var sizeSections = function(){
-		$.fn.horizon.defaults.docWidth = $(window).innerWidth();
-		$.fn.horizon.defaults.sections.each(function(){
-			$(this).width($.fn.horizon.defaults.docWidth);
-		});
-		
-		$('html').width($.fn.horizon.defaults.limit * $.fn.horizon.defaults.docWidth);
-		
-		scrollTo($.fn.horizon.defaults.i, 0);
-	};	
+    // Executes on 'scrollbegin'.
+    var scrollBeginHandler = function (delta) {
+        // Scroll up, Scroll down.
+        if (delta > 1) {
+            scrollLeft();
+        } else if (delta < -1) {
+            scrollRight();
+        }
+    };
+
+    // Executes on 'scrollend'.
+    var scrollEndHandler = function () {
+        $.fn.horizon.defaults.scrollTimeout = null;
+    };
+
+	var scrollAction = function (delta) {
+        if ($.fn.horizon.defaults.scrollTimeout === null) {
+            scrollBeginHandler(delta);
+        } else {
+            clearTimeout($.fn.horizon.defaults.scrollTimeout);
+        }
+
+        $.fn.horizon.defaults.scrollTimeout = setTimeout(scrollEndHandler, $.fn.horizon.defaults.scrollEndDelay);
+    };
+
+    var sizeSections = function () {
+        console.log('Sizing sections...');
+
+        $.fn.horizon.defaults.docWidth = $(window).innerWidth();
+        $.fn.horizon.defaults.sections.each(function () {
+            $(this).width($.fn.horizon.defaults.docWidth);
+        });
+
+        $('html').width($.fn.horizon.defaults.limit * $.fn.horizon.defaults.docWidth);
+
+        scrollTo($.fn.horizon.defaults.i, 0);
+    };
+
+    var scrolls = {
+        'right': scrollLeft,
+        'down': scrollLeft,
+        'left': scrollRight,
+        'up': scrollRight,
+        37: scrollLeft,
+        38: scrollLeft,
+        39: scrollRight,
+        40: scrollRight
+    };
  
 })(jQuery);
 
