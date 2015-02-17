@@ -53,7 +53,7 @@
                             scrolls[direction]();
                         }
 					},
-					// May be needed for other click events but curently not.
+					// May be needed for other click events but currently not.
 					/*click:function (event, target) {
 						event.preventDefault();
 						event.stopPropagation();
