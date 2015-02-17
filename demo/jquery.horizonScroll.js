@@ -55,19 +55,19 @@
                         }
                     },
                     /*click: function (event, target) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        event.stopImmediatePropagation();
+                     event.preventDefault();
+                     event.stopPropagation();
+                     event.stopImmediatePropagation();
 
-                        //$(target).click();
-                    },
-                    tap: function (event, target) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        event.stopImmediatePropagation();
+                     //$(target).click();
+                     },
+                     tap: function (event, target) {
+                     event.preventDefault();
+                     event.stopPropagation();
+                     event.stopImmediatePropagation();
 
-                        $(target).click();
-                    },*/
+                     $(target).click();
+                     },*/
                     // Default is 75px, set to 0 for demo so any distance triggers swipe
                     threshold: 75
                 });
@@ -168,12 +168,14 @@
     var sizeSections = function () {
         console.log('Sizing sections...');
 
-        $.fn.horizon.defaults.docWidth = $(window).innerWidth();
+        var iInnerWidth = $(window).innerWidth();
+
+        $.fn.horizon.defaults.docWidth = iInnerWidth;
         $.fn.horizon.defaults.sections.each(function () {
-            $(this).width($.fn.horizon.defaults.docWidth);
+            $(this).width(iInnerWidth);
         });
 
-        $('html').width($.fn.horizon.defaults.limit * $.fn.horizon.defaults.docWidth);
+        $('html').width($.fn.horizon.defaults.limit * iInnerWidth);
 
         scrollTo($.fn.horizon.defaults.i, 0);
     };
