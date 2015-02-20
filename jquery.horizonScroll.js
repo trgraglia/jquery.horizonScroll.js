@@ -1,6 +1,6 @@
 /**
  * HorizonScroll
- * Version: 1.0.2
+ * Version: 1.0.3
  * URL: https://github.com/trgraglia/jquery.horizonScroll.js/
  * Description: This is a jQuery plugin which allows for websites to scroll left and right.
  * Requires: jQuery 1.10.2
@@ -55,19 +55,19 @@
                         }
                     },
                     /*click: function (event, target) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        event.stopImmediatePropagation();
+                     event.preventDefault();
+                     event.stopPropagation();
+                     event.stopImmediatePropagation();
 
-                        //$(target).click();
-                    },
-                    tap: function (event, target) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        event.stopImmediatePropagation();
+                     //$(target).click();
+                     },
+                     tap: function (event, target) {
+                     event.preventDefault();
+                     event.stopPropagation();
+                     event.stopImmediatePropagation();
 
-                        $(target).click();
-                    },*/
+                     $(target).click();
+                     },*/
                     // Default is 75px, set to 0 for demo so any distance triggers swipe
                     threshold: 75
                 });
@@ -103,11 +103,13 @@
 // For animate, we must do both.
 // http://stackoverflow.com/questions/8790752/callback-of-animate-gets-called-twice-jquery
     var scrollTo = function (index, speed) {
-        console.log('Scroll to: ' + index);
-
         if (index > ($.fn.horizon.defaults.limit - 1) || index < 0) {
+            console.log('Scroll where? I think you want me to go out of my limits. Sorry, no can do.');
             return;
         }
+
+        console.log('Scroll to: ' + index);
+        $.fn.horizon.defaults.i = index;
 
         var $section = $($.fn.horizon.defaults.sections[index]);
         $('html,body').animate({scrollLeft: $section.offset().left}, speed, 'swing', $.fn.horizon.defaults.fnCallback(index));
@@ -127,16 +129,20 @@
     var scrollLeft = function () {
         console.log('Scroll left');
 
-        if ($.fn.horizon.defaults.i > 0) {
-            scrollTo(--$.fn.horizon.defaults.i, $.fn.horizon.defaults.scrollDuration);
+        var i2 = $.fn.horizon.defaults.i - 1;
+
+        if (i2 > -1) {
+            scrollTo(i2, $.fn.horizon.defaults.scrollDuration);
         }
     };
 
     var scrollRight = function () {
         console.log('Scroll right');
 
-        if ($.fn.horizon.defaults.i < $.fn.horizon.defaults.limit - 1) {
-            scrollTo(++$.fn.horizon.defaults.i, $.fn.horizon.defaults.scrollDuration);
+        var i2 = $.fn.horizon.defaults.i + 1;
+
+        if (i2 < $.fn.horizon.defaults.limit) {
+            scrollTo(i2, $.fn.horizon.defaults.scrollDuration);
         }
     };
 
