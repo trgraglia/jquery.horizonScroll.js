@@ -38,7 +38,19 @@ The selector here is ignored.
 ```javascript
 $(document).horizon('scrollRight');
 $(document).horizon('scrollLeft');
-$(document).horizon('scrollTo', i);
+
+// As of 1.1.0, i can be an integer with or without quotes in order to scroll to an index.
+// Or i can be a string of an element id to scroll to.
+$(document).horizon('scrollTo', i); 
 ```
 
+Changelog
+=======================
+1.1.0:
+- Support for IDs using scrollTo().
 
+Notes and References
+====================
+http://stackoverflow.com/questions/4989632/differentiate-between-scroll-up-down-in-jquery
+http://stackoverflow.com/questions/4289473/javascript-do-an-action-after-user-is-done-scrolling
+http://stackoverflow.com/questions/175739/is-there-a-built-in-way-in-javascript-to-check-if-a-string-is-a-valid-number

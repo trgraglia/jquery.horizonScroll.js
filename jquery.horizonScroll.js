@@ -1,6 +1,6 @@
 /**
  * HorizonScroll
- * Version: 1.0.3
+ * Version: 1.1.0
  * URL: https://github.com/trgraglia/jquery.horizonScroll.js/
  * Description: This is a jQuery plugin which allows for websites to scroll left and right.
  * Requires: jQuery 1.10.2
@@ -20,8 +20,12 @@
             scrollLeft();
         } else if (options === 'scrollRight') {
             scrollRight();
-        } else if (options === 'scrollTo') { // TODO: Should verify i here
-            scrollTo(i, $.fn.horizon.defaults.scrollDuration);
+        } else if (options === 'scrollTo') {
+            if (isNumeric(i)) {
+                scrollTo(+i, $.fn.horizon.defaults.scrollDuration);
+            } else {
+                scrollToId(i, $.fn.horizon.defaults.scrollDuration);
+            }
         } else {
             $.extend($.fn.horizon.defaults, options);
 
@@ -44,6 +48,11 @@
                 scrollRight();
             }).on('click', '.horizon-prev', function () {
                 scrollLeft();
+            }).on('click', 'a[href^="#"]', function () {
+                var hash = $(this).attr('href');
+                if (-1 < hash.indexOf('#')) {
+                    scrollToId(hash.split('#')[1], $.fn.horizon.defaults.scrollDuration);
+                }
             });
 
             if ($.fn.horizon.defaults.swipe) {
@@ -99,9 +108,26 @@
         }
     };
 
-// HTML animate does not work in webkit. BODY does not work in opera.
-// For animate, we must do both.
-// http://stackoverflow.com/questions/8790752/callback-of-animate-gets-called-twice-jquery
+    function isNumeric(num) {
+        return !isNaN(num)
+    }
+
+    function scrollToId(id, speed) {
+        var i = -1;
+        $.fn.horizon.defaults.sections.each(function (index, element) {
+            if (id === $(this).attr('id')) {
+                i = index;
+            }
+        });
+
+        if (0 <= i) {
+            scrollTo(i, $.fn.horizon.defaults.scrollDuration);
+        }
+    }
+
+    // HTML animate does not work in webkit. BODY does not work in opera.
+    // For animate, we must do both.
+    // http://stackoverflow.com/questions/8790752/callback-of-animate-gets-called-twice-jquery
     var scrollTo = function (index, speed) {
         if (index > ($.fn.horizon.defaults.limit - 1) || index < 0) {
             console.log('Scroll where? I think you want me to go out of my limits. Sorry, no can do.');
@@ -146,7 +172,7 @@
         }
     };
 
-// Executes on 'scrollbegin'.
+    // Executes on 'scrollbegin'.
     var scrollBeginHandler = function (delta) {
         // Scroll up, Scroll down.
         if (delta > 1) {
@@ -156,7 +182,7 @@
         }
     };
 
-// Executes on 'scrollend'.
+    // Executes on 'scrollend'.
     var scrollEndHandler = function () {
         $.fn.horizon.defaults.scrollTimeout = null;
     };
@@ -172,17 +198,18 @@
     };
 
     var sizeSections = function () {
-        console.log('Sizing sections...');
-
         var iInnerWidth = $(window).innerWidth();
 
+        // Store window width and assign it to each panel or section.
         $.fn.horizon.defaults.docWidth = iInnerWidth;
         $.fn.horizon.defaults.sections.each(function () {
             $(this).width(iInnerWidth);
         });
 
+        // Set the page to be a width large enough to include all panels.
         $('html').width($.fn.horizon.defaults.limit * iInnerWidth);
 
+        // Scroll to current section without animation.
         scrollTo($.fn.horizon.defaults.i, 0);
     };
 
@@ -199,7 +226,3 @@
 
 })
 (jQuery);
-
-// SCROLLING NOTES
-// http://stackoverflow.com/questions/4989632/differentiate-between-scroll-up-down-in-jquery
-// http://stackoverflow.com/questions/4289473/javascript-do-an-action-after-user-is-done-scrolling
