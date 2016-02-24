@@ -47,7 +47,10 @@ $(document).horizon('scrollTo', i);
 Changelog
 =======================
 1.1.0:
-- Support for IDs using scrollTo().
+- Added support for element IDs using scrollTo()
+- Added support for animating the scroll to a section via hash links
+- Updated sample index.html
+- Updated readme
 
 Notes and References
 ====================
