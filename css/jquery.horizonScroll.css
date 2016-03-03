@@ -1,0 +1,32 @@
+html, body {
+    width: 100%;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+section {
+    box-sizing: border-box;
+    float: left;
+    display: block;
+    height: 100vh;
+    width: 100vw;
+    padding: 75px 0 0 0;
+    margin: 0;
+}
+
+/* Change these classes with the plugin defaults. */
+.horizon-prev,
+.horizon-next {
+    transition: visibility 0.25s, opacity 0.25s;
+    visibility: visible;
+    opacity: 1;
+}
+
+/* '.hidden' class is added and removed by the plugin. */
+.horizon-prev.hidden,
+.horizon-next.hidden {
+    visibility: hidden;
+    opacity: 0;
+}

@@ -16,17 +16,28 @@
     'use strict';
 
     $.fn.horizon = function (options, i) {
+        // Triggering a scroll left:
+        // $(document).horizon('scrollLeft');
         if (options === 'scrollLeft') {
             scrollLeft();
-        } else if (options === 'scrollRight') {
+        }
+        // Triggering a scroll right:
+        // $(document).horizon('scrollRight');
+        else if (options === 'scrollRight') {
             scrollRight();
-        } else if (options === 'scrollTo') {
+        }
+        // Triggering a scroll to index or id:
+        // $(document).horizon('scrollTo', 0);
+        // $(document).horizon('scrollTo', 'section1');
+        else if (options === 'scrollTo') {
             if (isNumeric(i)) {
                 scrollTo(+i, $.fn.horizon.defaults.scrollDuration);
             } else {
                 scrollToId(i, $.fn.horizon.defaults.scrollDuration);
             }
-        } else {
+        }
+        // Plugin initialization
+        else {
             $.extend($.fn.horizon.defaults, options);
 
             $.fn.horizon.defaults.sections = this;
@@ -44,9 +55,9 @@
                 var delta = evt.detail ? evt.detail * (-40) : evt.wheelDelta;
 
                 scrollAction(delta);
-            }).on('click', '.horizon-next', function () {
+            }).on('click', '.' + $.fn.horizon.defaults.nextSectionClass, function () {
                 scrollRight();
-            }).on('click', '.horizon-prev', function () {
+            }).on('click', '.' + $.fn.horizon.defaults.previousSectionClass, function () {
                 scrollLeft();
             }).on('click', 'a[href^="#"]', function () {
                 var hash = $(this).attr('href');
@@ -103,7 +114,10 @@
         limit: 0,
         docWidth: 0,
         sections: null,
+        sectionWidthViewpoints: 100,
         swipe: true,
+        previousSectionClass: 'horizon-prev',
+        nextSectionClass: 'horizon-next',
         fnCallback: function (i) {
         }
     };
@@ -114,14 +128,14 @@
 
     function scrollToId(id, speed) {
         var i = -1;
-        $.fn.horizon.defaults.sections.each(function (index, element) {
+        $.fn.horizon.defaults.sections.each(function (index) {
             if (id === $(this).attr('id')) {
                 i = index;
             }
         });
 
         if (0 <= i) {
-            scrollTo(i, $.fn.horizon.defaults.scrollDuration);
+            scrollTo(i, speed);
         }
     }
 
@@ -130,31 +144,31 @@
     // http://stackoverflow.com/questions/8790752/callback-of-animate-gets-called-twice-jquery
     var scrollTo = function (index, speed) {
         if (index > ($.fn.horizon.defaults.limit - 1) || index < 0) {
-            console.log('Scroll where? I think you want me to go out of my limits. Sorry, no can do.');
+            if (window.console) {
+                window.console.log('Scroll where? I think you want me to go out of my limits. Sorry, no can do.');
+            }
+
             return;
         }
 
-        console.log('Scroll to: ' + index);
         $.fn.horizon.defaults.i = index;
 
         var $section = $($.fn.horizon.defaults.sections[index]);
         $('html,body').animate({scrollLeft: $section.offset().left}, speed, 'swing', $.fn.horizon.defaults.fnCallback(index));
 
         if (index === 0) {
-            $('.horizon-prev').hide();
-            $('.horizon-next').show();
+            $('.' + $.fn.horizon.defaults.previousSectionClass).addClass('hidden');
+            $('.' + $.fn.horizon.defaults.nextSectionClass).removeClass('hidden');
         } else if (index === $.fn.horizon.defaults.limit - 1) {
-            $('.horizon-prev').show();
-            $('.horizon-next').hide();
+            $('.' + $.fn.horizon.defaults.previousSectionClass).removeClass('hidden');
+            $('.' + $.fn.horizon.defaults.nextSectionClass).addClass('hidden');
         } else {
-            $('.horizon-next').show();
-            $('.horizon-prev').show();
+            $('.' + $.fn.horizon.defaults.previousSectionClass).removeClass('hidden');
+            $('.' + $.fn.horizon.defaults.nextSectionClass).removeClass('hidden');
         }
     };
 
     var scrollLeft = function () {
-        console.log('Scroll left');
-
         var i2 = $.fn.horizon.defaults.i - 1;
 
         if (i2 > -1) {
@@ -163,8 +177,6 @@
     };
 
     var scrollRight = function () {
-        console.log('Scroll right');
-
         var i2 = $.fn.horizon.defaults.i + 1;
 
         if (i2 < $.fn.horizon.defaults.limit) {
@@ -198,16 +210,8 @@
     };
 
     var sizeSections = function () {
-        var iInnerWidth = $(window).innerWidth();
-
-        // Store window width and assign it to each panel or section.
-        $.fn.horizon.defaults.docWidth = iInnerWidth;
-        $.fn.horizon.defaults.sections.each(function () {
-            $(this).width(iInnerWidth);
-        });
-
         // Set the page to be a width large enough to include all panels.
-        $('html').width($.fn.horizon.defaults.limit * iInnerWidth);
+        $('html').css('width', $.fn.horizon.defaults.sections.length * $.fn.horizon.defaults.sectionWidthViewpoints + 'vw');
 
         // Scroll to current section without animation.
         scrollTo($.fn.horizon.defaults.i, 0);
